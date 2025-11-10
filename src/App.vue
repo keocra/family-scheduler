@@ -1,19 +1,24 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import AddPersonButton from './components/AddPersonButton.vue'
+import PersonComponent from './components/Person.vue'
+import {ref} from 'vue'
+
+const persons = ref([])
+
+const createPerson = () => {
+  persons.value.push({name: ""})
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
   <main>
-    <TheWelcome />
+    <header>
+      <div class="wrapper">
+        <h1 class="green">Family Scheduler</h1>
+      </div>
+    </header>
+    <add-person-button @click="createPerson"/>
+    <person-component v-for="person in persons" :key="person.id"/>
   </main>
 </template>
 
