@@ -3,6 +3,15 @@ import AddPersonButton from './components/AddPersonButton.vue'
 import Person from './components/Person.vue'
 import {ref} from 'vue'
 
+import { GChart } from 'vue-google-charts'
+
+const chartData = [
+    ['Person', 'Start', 'End'],
+  [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
+  [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
+  [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]
+]
+
 const persons = ref([])
 const personId = ref(0)
 
@@ -33,6 +42,15 @@ const deletePerson = (pos) => {
     <add-person-button @click="createPerson()"/>
     <Person v-for="(person, _) in persons" :index="person.id" :key="person.id"
                       @delete-person="deletePerson(person.id)"/>
+    <br/>
+    <div v-if="persons.length > 0">
+      <h2>Timeline:</h2>
+      <GChart
+          type="Timeline"
+          :data="chartData"
+          :settings="{ packages: ['timeline'] }"
+      />
+    </div>
   </main>
 </template>
 
