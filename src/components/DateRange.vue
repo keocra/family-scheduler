@@ -9,7 +9,7 @@ defineProps({
 import { ref } from 'vue';
 import Trash from './icons/trash.vue'
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete-date'])
 
 const startDate = ref(null);
 const endDate = ref(null);

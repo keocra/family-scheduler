@@ -14,16 +14,24 @@
 
   const emit = defineEmits(['delete-person'])
 
-  const person_name = ref("");
+  const person_name = ref("")
 
+  const dates = ref(0)
   const dateRanges = ref([])
 
   const createDate = () => {
-    dateRanges.value.push({pos: dateRanges.value.length});
+    dateRanges.value.push({pos: dates.value++});
   }
 
   const handleDelete = () => {
     emit('delete-person');
+  }
+
+  const deleteDate = (pos) => {
+    if (pos === undefined) {
+      return
+    }
+    dateRanges.value = dateRanges.value.filter(dateRange => dateRange.pos !== pos)
   }
 </script>
 
@@ -45,7 +53,8 @@
     <br/>
     Date ranges:<br/>
     <date-button @click="createDate"/>
-    <date-range v-for="dateRange in dateRanges" :key="dateRange.pos" :pos="dateRange.pos"/>
+    <date-range v-for="dateRange in dateRanges" :key="dateRange.pos" :pos="dateRange.pos"
+                @delete-date="deleteDate(dateRange.pos)"/>
   </div>
 </template>
 

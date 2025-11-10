@@ -31,7 +31,7 @@ const deletePerson = (pos) => {
       </div>
     </header>
     <add-person-button @click="createPerson()"/>
-    <Person v-for="(person, index) in persons" :index="person.id" :key="person.id"
+    <Person v-for="(person, _) in persons" :index="person.id" :key="person.id"
                       @delete-person="deletePerson(person.id)"/>
   </main>
 </template>
