@@ -1,12 +1,25 @@
 <script setup>
 import AddPersonButton from './components/AddPersonButton.vue'
-import PersonComponent from './components/Person.vue'
+import Person from './components/Person.vue'
 import {ref} from 'vue'
 
 const persons = ref([])
+const personId = ref(0)
 
 const createPerson = () => {
-  persons.value.push({name: ""})
+  const person = {
+    id: personId.value++
+  }
+  persons.value.push(person)
+}
+const deletePerson = (pos) => {
+  if (pos === undefined) {
+    return
+  }
+  persons.value = persons.value.filter(person => person.id !== pos)
+  if (persons.value.length === 0) {
+    personId.value = 0
+  }
 }
 </script>
 
@@ -17,19 +30,15 @@ const createPerson = () => {
         <h1 class="green">Family Scheduler</h1>
       </div>
     </header>
-    <add-person-button @click="createPerson"/>
-    <person-component v-for="person in persons" :key="person.id"/>
+    <add-person-button @click="createPerson()"/>
+    <Person v-for="(person, index) in persons" :index="person.id" :key="person.id"
+                      @delete-person="deletePerson(person.id)"/>
   </main>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
 }
 
 @media (min-width: 1024px) {

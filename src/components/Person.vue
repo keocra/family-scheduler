@@ -1,4 +1,11 @@
 <script setup>
+  defineProps({
+    index: {
+      type: Number,
+      required: true,
+    },
+  })
+
   import { ref } from 'vue';
 
   import DateButton from './DateButton.vue'
