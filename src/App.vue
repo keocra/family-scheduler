@@ -46,7 +46,7 @@ const re_render_timeline = () => {
                                                 .filter(dateRange => dateRange.startDate !== undefined && dateRange.startDate !== null && dateRange.endDate !== undefined && dateRange.endDate !== null && dateRange.startDate !== "" && dateRange.endDate !== "")
                                                 .map(dateRange => {
                                                   return {
-                                                    label: dateRange.label,
+                                                    label: dateRange.label ? dateRange.label : "",
                                                     startDate: new Date(dateRange.startDate),
                                                     endDate: new Date(dateRange.endDate)
                                                   }
@@ -59,11 +59,11 @@ const re_render_timeline = () => {
   }
 
   let tmpChartData = [
-    ['Person', 'Start', 'End']
+    ['Person', 'Label', 'Start', 'End']
   ]
   for (const person of intChartData2) {
     for (const dateRange of person.date_ranges) {
-      tmpChartData.push([person.name, dateRange.startDate, dateRange.endDate])
+      tmpChartData.push([person.name, dateRange.label, dateRange.startDate, dateRange.endDate])
     }
   }
   chartData.value = tmpChartData
