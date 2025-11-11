@@ -45,10 +45,12 @@ const re_render_timeline = () => {
                             date_ranges: person.date_ranges
                                                 .filter(dateRange => dateRange.startDate !== undefined && dateRange.startDate !== null && dateRange.endDate !== undefined && dateRange.endDate !== null && dateRange.startDate !== "" && dateRange.endDate !== "")
                                                 .map(dateRange => {
+                                                  let endDate = new Date(dateRange.endDate)
+                                                  endDate.setDate(endDate.getDate() + 1)
                                                   return {
                                                     label: dateRange.label ? dateRange.label : "",
                                                     startDate: new Date(dateRange.startDate),
-                                                    endDate: new Date(dateRange.endDate)
+                                                    endDate: endDate
                                                   }
                                                 })
                           }
