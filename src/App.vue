@@ -92,13 +92,16 @@ watch(personRefs, () => {
     <div v-if="show_timeline">
       <h2>Timeline:</h2>
       <GChart
+          id="timeline"
           type="Timeline"
           :data="chartData"
           :settings="{ packages: ['timeline'] }"
+          :options="{ height: chartData.length * 41 + 30 }"
       />
     </div>
   </main>
 </template>
 
 <style scoped>
+
 </style>
