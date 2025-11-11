@@ -1,19 +1,15 @@
 <script setup>
 import AddPersonButton from './components/AddPersonButton.vue'
 import Person from './components/Person.vue'
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 
 import { GChart } from 'vue-google-charts'
 
-const chartData = [
-    ['Person', 'Start', 'End'],
-  [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
-  [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
-  [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]
-]
+const chartData = ref([])
 
 const persons = ref([])
 const personId = ref(0)
+const personRefs = ref([])
 
 const createPerson = () => {
   const person = {
@@ -30,6 +26,52 @@ const deletePerson = (pos) => {
     personId.value = 0
   }
 }
+
+const show_timeline = ref(false)
+const re_render_timeline = () => {
+  show_timeline.value = false
+  let intChartData = personRefs.value
+                        .filter(person => person.date_ranges !== undefined && person.date_ranges.length > 0)
+                        .filter(person => person.date_ranges.some(dateRange => dateRange.startDate !== undefined && dateRange.startDate !== null && dateRange.endDate !== undefined && dateRange.endDate !== null && dateRange.startDate !== "" && dateRange.endDate !== ""))
+  let intChartData2 = intChartData
+                        .map(person => {
+                          let name = person.person_name
+                          if (name === undefined || name === "") {
+                            name = "<<Unnamed " + person.index + ">>"
+                          }
+                          return {
+                            id: person.index,
+                            name: name,
+                            date_ranges: person.date_ranges
+                                                .filter(dateRange => dateRange.startDate !== undefined && dateRange.startDate !== null && dateRange.endDate !== undefined && dateRange.endDate !== null && dateRange.startDate !== "" && dateRange.endDate !== "")
+                                                .map(dateRange => {
+                                                  return {
+                                                    label: dateRange.label,
+                                                    startDate: new Date(dateRange.startDate),
+                                                    endDate: new Date(dateRange.endDate)
+                                                  }
+                                                })
+                          }
+                        })
+  if (intChartData2.length === 0) {
+    chartData.value = []
+    return
+  }
+
+  let tmpChartData = [
+    ['Person', 'Start', 'End']
+  ]
+  for (const person of intChartData2) {
+    for (const dateRange of person.date_ranges) {
+      tmpChartData.push([person.name, dateRange.startDate, dateRange.endDate])
+    }
+  }
+  chartData.value = tmpChartData
+  show_timeline.value = true
+}
+watch(personRefs, () => {
+  re_render_timeline()
+}, {deep: true})
 </script>
 
 <template>
@@ -41,9 +83,13 @@ const deletePerson = (pos) => {
     </header>
     <add-person-button @click="createPerson()"/>
     <Person v-for="(person, _) in persons" :index="person.id" :key="person.id"
-                      @delete-person="deletePerson(person.id)"/>
+                      @delete-person="deletePerson(person.id)"
+                      @person-date-range-change="re_render_timeline()"
+                      @person-name-change="re_render_timeline()"
+                      ref="personRefs"
+    />
     <br/>
-    <div v-if="persons.length > 0">
+    <div v-if="show_timeline">
       <h2>Timeline:</h2>
       <GChart
           type="Timeline"
@@ -55,25 +101,4 @@ const deletePerson = (pos) => {
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>

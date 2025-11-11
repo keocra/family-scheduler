@@ -1,23 +1,30 @@
 <script setup>
-  defineProps({
+  const props = defineProps({
     index: {
       type: Number,
       required: true,
     },
   })
 
-  import { ref } from 'vue';
+  import {ref, watch} from 'vue';
 
   import DateButton from './DateButton.vue'
   import DateRange from './DateRange.vue'
   import Trash from "./icons/trash.vue";
 
-  const emit = defineEmits(['delete-person'])
+  const emit = defineEmits(['delete-person', 'person-name-change', 'person-date-range-change'])
 
   const person_name = ref("")
 
+  watch(person_name, () => {
+    emit('person-name-change')
+  })
+
   const dates = ref(0)
   const dateRanges = ref([])
+  watch(dateRanges, () => {
+    emit('person-date-range-change')
+  }, {deep: true})
 
   const createDate = () => {
     dateRanges.value.push({pos: dates.value++});
@@ -32,13 +39,25 @@
       return
     }
     dateRanges.value = dateRanges.value.filter(dateRange => dateRange.pos !== pos)
+    if (dateRanges.value.length === 0) {
+      dates.value = 0
+    }
   }
+
+  const date_ranges = ref([])
+  const index = ref(props.index)
+  
+  defineExpose({
+    person_name,
+    date_ranges,
+    index
+  })
 </script>
 
 <template>
   <br/>
   <div class="person">
-    <h2 v-visible="person_name !== ''">{{ person_name }}</h2>
+    <h2 v-show="person_name !== ''">{{ person_name }}</h2>
     Persons name: <input
           type="text"
           v-model="person_name"
@@ -54,7 +73,10 @@
     Date ranges:<br/>
     <date-button @click="createDate"/>
     <date-range v-for="dateRange in dateRanges" :key="dateRange.pos" :pos="dateRange.pos"
-                @delete-date="deleteDate(dateRange.pos)"/>
+                @delete-date="deleteDate(dateRange.pos)"
+                @date-range-change="emit('person-date-range-change')"
+                ref="date_ranges"
+    />
   </div>
 </template>
 
