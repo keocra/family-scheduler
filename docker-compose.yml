@@ -1,0 +1,11 @@
+
+
+services:
+  family-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - "family-scheduler:latest"
+    ports:
+      - 12345:80
