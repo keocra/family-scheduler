@@ -20,6 +20,8 @@ jobs:
         node-version: [24.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    "permissions": "write-all"
+
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -38,5 +40,4 @@ jobs:
 
     - name: Deploy GitHub Pages site
       uses: actions/deploy-pages@v4.0.5
-
-          
+      
