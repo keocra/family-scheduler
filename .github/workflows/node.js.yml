@@ -21,6 +21,8 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     "permissions": "write-all"
+    environment: 
+        name: github-pages
 
     steps:
     - uses: actions/checkout@v4
@@ -40,4 +42,5 @@ jobs:
 
     - name: Deploy GitHub Pages site
       uses: actions/deploy-pages@v4.0.5
+      
       
