@@ -36,10 +36,6 @@ jobs:
         name: github-pages
         path: dist 
 
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
     - name: Deploy GitHub Pages site
       uses: actions/deploy-pages@v4.0.5
 
